@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: true
+  pre_tasks: 
+
+  - name: update repository index
+    tags: always
+    package: 
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install apache2 package
+    apt:
+     name: apache2
+     state: latest
+
+  - name: copy file
+    copy:
+      src: test.html
+      dest: /home/ubuntu/test2.html
+      owner: root
+      group: root
+      mode: 0644
+
+  

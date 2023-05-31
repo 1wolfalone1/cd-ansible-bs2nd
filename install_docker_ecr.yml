@@ -1,0 +1,37 @@
+---
+- name: Install Docker and set up ECR login
+  hosts: all  # Replace with your target hosts or host group
+  become: yes
+  become_user: root
+
+
+  tasks:
+    - name: Update packages
+      become: true
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Docker
+      become: true
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install AWS CLI
+      apt:
+        name: awscli
+        state: present
+
+    - name: Create ~/.aws directory
+      file:
+        path: ~/.aws
+        state: directory
+        mode: '0700'
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Configure AWS credentials
+      template:
+        src: aws-credentials.j2
+        dest: ~/.aws/credentials
